@@ -18,7 +18,7 @@ Quelles structures de Redis vous paraissent les plus adaptées pour ces deux bes
 On a un identifiant unique d'un article avec son timestamp (article:1 -> 1511780179) et la même chose dans un autre SortedSed pour le score (article:1 -> 1511780636)
 
 - question c) On veut aussi connaître les utilisateurs qui ont voté pour un article. Même question que précédemment concernant la structure.
-réponse c) Un HashSet est la structure à préconiser pour savoir quel utilisateur a voté pour quel article. 
+- réponse c) Un HashSet est la structure à préconiser pour savoir quel utilisateur a voté pour quel article. 
 En effet, chaque utilisateur peut voter qu'une seule fois pour un article donc le HashSet est idéal car il ne contient pas de doublons.
 Notre HashSet contiendra par exemple (selectionne:1 -> gregory) qui signifie que l'utilisateur "gregory" a voté pour l'article 1.
 
