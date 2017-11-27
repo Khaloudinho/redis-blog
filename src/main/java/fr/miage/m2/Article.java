@@ -24,7 +24,7 @@ public class Article {
         donnees.put("nbvotes", "1");
         conn.hmset(article, donnees);
         conn.zadd("date:article", now, article);
-        conn.zadd("nbvotes:article", 1, article);
+        conn.zadd("nbvotes:article", 0, article);
         return articleId;
     }
 
@@ -33,7 +33,7 @@ public class Article {
             conn.sadd("selectionne:" + articleId, utilisateur);
             conn.hincrBy("article:" + articleId, "nbvotes", 1);
             conn.expire("selectionne:" + articleId, UNE_SEMAINE);
-            conn.zincrby("nbvotes:", 1, "article:" + articleId);
+            conn.zincrby("nbvotes:article", 1, "article:" + articleId);
         }
     }
 
@@ -44,7 +44,7 @@ public class Article {
     }
 
     public static Set<String> recupererDixArticlesLesPlusVotes(Jedis conn){
-        Set<String> articles = conn.zrange("nbvotes:article" , 0, 9);
+        Set<String> articles = conn.zrevrange("nbvotes:article" , 0, 9);
         for (String article : articles) System.out.println(article);
         return articles;
     }

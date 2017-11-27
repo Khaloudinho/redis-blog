@@ -2,6 +2,8 @@ import fr.miage.m2.Article;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -16,9 +18,7 @@ public class ArticleTest {
     public static void cleanUp() {
         Jedis conn = new Jedis(host, port);
         conn.select(redis);
-        if (redis != 0){
-            conn.flushAll();
-        }
+        if (redis != 0) conn.flushAll();
     }
 
     @Test
@@ -56,6 +56,8 @@ public class ArticleTest {
     @Test
     public void recupererDixArticlesLesPlusVotesTest() {
         Jedis conn = new Jedis(host, port);
-        Article.recupererDixArticlesLesPlusVotes(conn);
+        Set<String> dixArticlesLesPlusVotes = Article.recupererDixArticlesLesPlusVotes(conn);
+
+        //assertEquals(, dixArticlesLesPlusVotes);
     }
 }
