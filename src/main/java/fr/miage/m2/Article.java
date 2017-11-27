@@ -51,7 +51,7 @@ public class Article {
         return articles;
     }
 
-    public static Set<String> recupererDixArticlesLesPlusVotes(Jedis conn){
+    public static Set<String> recupererDixArticlesLesPlusVotes(Jedis conn) {
         Set<String> articles = conn.zrevrange("nbvotes:article" , 0, 9);
         System.out.println("\n********** Les dix articles ayant reçu le plus de votes sont ci-dessous : ");
         for (String article : articles) System.out.println(article);
@@ -73,7 +73,7 @@ public class Article {
         conn.srem("categorie:" + categorie, "article:" + articleId);
     }
 
-    public static Set<String> recupererArticlesDeCategorie(Jedis conn, String categorie){
+    public static Set<String> recupererArticlesDeCategorie(Jedis conn, String categorie) {
         return conn.smembers("categorie:" + categorie);
     }
 
@@ -88,7 +88,8 @@ public class Article {
         Set<Pair<String, Double>> articlesAvecScores = new HashSet<>();
 
         for (String article : articlesDeCategorie) {
-            articlesAvecScores.add(new Pair<>(article, recupererScorePourUnArticle(conn, article)));
+            // Petite opération à faire pour juste récupérer le n° de l'article d'ou le substring
+            articlesAvecScores.add(new Pair<>(article, recupererScorePourUnArticle(conn, article.substring(8))));
         }
 
         return articlesAvecScores;
