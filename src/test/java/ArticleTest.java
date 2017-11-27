@@ -1,10 +1,11 @@
 import fr.miage.m2.Article;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,14 +51,29 @@ public class ArticleTest {
     public void recupererListeArticlesTest() {
         Jedis conn = new Jedis(host, port);
         Set<String> articles = Article.recupererListeArticles(conn);
-        assertEquals(1, articles.size());
+        assertEquals(20, articles.size());
     }
 
     @Test
     public void recupererDixArticlesLesPlusVotesTest() {
         Jedis conn = new Jedis(host, port);
         Set<String> dixArticlesLesPlusVotes = Article.recupererDixArticlesLesPlusVotes(conn);
+        List<Double> scoresUn = new ArrayList<>(), scoresDeux = new ArrayList<>();
 
-        //assertEquals(, dixArticlesLesPlusVotes);
+        for (int i = 1; i < 21; i++) {
+            String articleId = String.valueOf(i);
+            Article.voterPourArticle(conn, "joe", articleId);
+            Article.voterPourArticle(conn, "john", articleId);
+            Article.voterPourArticle(conn, "brooklyn", articleId);
+            scoresUn.add(conn.zscore("nbvotes:article", "article:" + articleId));
+        }
+
+        for (String article : dixArticlesLesPlusVotes){
+            scoresDeux.add(conn.zscore("nbvotes:article", article));
+        }
+
+        Collections.sort(scoresUn, Collections.reverseOrder());
+
+        assertEquals(scoresUn.subList(0, 10), scoresDeux);
     }
 }
